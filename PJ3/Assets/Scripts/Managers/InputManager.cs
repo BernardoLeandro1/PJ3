@@ -53,6 +53,8 @@ public class InputManager : MonoBehaviour
 
     HelpsManager helpsManager;
 
+    PlayerandCameraHolders playerandCamera;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,6 +68,7 @@ public class InputManager : MonoBehaviour
         cameraSwitcher = gameObject.GetComponent<CameraSwitcher>();
         lanternManager = gameObject.GetComponent<LanternManager>();
         helpsManager = gameObject.GetComponent<HelpsManager>();
+        playerandCamera = gameObject.GetComponent<PlayerandCameraHolders>();
     }
 
     // Update is called once per frame
@@ -79,7 +82,7 @@ public class InputManager : MonoBehaviour
         //Cam Rotation
         if((Input.GetAxisRaw("Mouse X")!=0f||Input.GetAxisRaw("Mouse Y")!=0f) && inspectionManager.IsInspecting() == false){
             if (Cam.activeSelf==true && uIManager.notePad.activeSelf == false){
-                Debug.Log("Cam1");
+                //Debug.Log("Cam1");
                 moveCamera.CameraRotation(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
             }
             // else if(Cam2.activeSelf==true){
@@ -104,7 +107,7 @@ public class InputManager : MonoBehaviour
         if(Input.GetKeyDown(interactKey) && !lanternManager.IsUsingLantern()){
             interactionsManager.Interaction();
         }
-        if(Input.GetMouseButtonDown(0)){
+        if(Input.GetMouseButtonDown(0) && uIManager.IsPaused() == false){
             if(Cursor.lockState == CursorLockMode.Locked){
                 interactionsManager.Interaction();
             }
@@ -149,14 +152,20 @@ public class InputManager : MonoBehaviour
             inspectionManager.InspectItem(inventoryManager.GetCurrentItem());
             uIManager.ActivateInspectionMenu(inventoryManager.GetCurrentItem());
         }
-
-        // Exit Inspection
-        if(Input.GetKeyDown(exitKey) ){
+        // Exit Inspection & Pause
+       if(Input.GetKeyDown(exitKey) ){
             if(inspectionManager.IsInspecting() == true){
                 inspectionManager.ExitInspection();
                 uIManager.DeactivateInspectionMenu();
                 interactionsManager.HoldObject(inventoryManager.GetCurrentItem());
+            }else if(uIManager.IsPaused()){
+                uIManager.HidePause();
+                playerandCamera.PlayerCanMove(true);
+            }else{
+                playerandCamera.PlayerCanMove(false);
+                uIManager.ShowPause();
             }
+
             if(Cam.activeSelf==false){
                 cameraSwitcher.ExitCurrentCamera();
             }

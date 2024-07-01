@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour{
 
     public GameObject ExitPanel;
-    public GameObject Options;
     public GameObject Main;
 
     public void PlayGame (){

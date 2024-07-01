@@ -56,7 +56,7 @@ public class UIManager : MonoBehaviour
 
     public Texture2D cursorClose;
 
-
+    public GameObject pauseMenu;
     
 
     private List<string> textToShow;
@@ -77,6 +77,8 @@ public class UIManager : MonoBehaviour
 
     private bool firstDialogue;
 
+    private bool playerMove;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -88,7 +90,8 @@ public class UIManager : MonoBehaviour
         inventoryManager = gameObject.GetComponent<InventoryManager>();
         textToShow = new List<string>();
         time = Time.deltaTime;
-        firstDialogue = true;      
+        firstDialogue = true; 
+        playerMove = true;     
     }
 
     // Update is called once per frame
@@ -460,5 +463,28 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void ShowPause(){
+        playerMove = false;
+        pauseMenu.SetActive(true);
+        ActivateBlur(true);
+        HideCrossair();
+        ChangeCursor("close");
+    }
+
+    public void HidePause(){
+        playerMove = true;
+        pauseMenu.SetActive(false);
+        ActivateBlur(false);
+        HideCrossair();
+        ChangeCursor("locked");
+    }
+
+    public bool IsPaused(){
+        if (playerMove){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 }
